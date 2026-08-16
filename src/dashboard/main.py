@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+import asyncio
 from collections.abc import AsyncIterator
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, suppress
 from pathlib import Path
 
 from fastapi import FastAPI, Request
@@ -16,6 +17,7 @@ from .api.admin.logo import router as admin_logo_router
 from .api.admin.services import router as admin_services_router
 from .api.admin.users import router as admin_users_router
 from .api.me import router as me_router
+from .api.services import close_probe_resources, warm_cache
 from .api.services import router as services_router
 from .auth.routes import router as auth_router
 from .config import get_settings
@@ -51,7 +53,21 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     init_db()
     run_seed()
-    yield
+    # Pre-warm the health probes in the background so the first page load
+    # answers from cache (or joins the in-flight probes) instead of blocking
+    # on the whole fleet's worst timeout.
+    warmup: asyncio.Task | None = None
+    if get_settings().probe_cache_ttl > 0:
+        warmup = asyncio.create_task(warm_cache())
+    try:
+        yield
+    finally:
+        if warmup is not None:
+            if not warmup.done():
+                warmup.cancel()
+            with suppress(asyncio.CancelledError):
+                await warmup
+        await close_probe_resources()
 
 
 def create_app() -> FastAPI:
