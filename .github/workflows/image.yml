@@ -1,0 +1,81 @@
+name: build-image
+
+# Builds and pushes the Docker image on every v* tag (and on demand).
+# Requires: a GitHub Packages package created for this repo with "public"
+# visibility (Settings -> Packages). The GITHUB_TOKEN permission "packages:
+# write" is declared above, so no extra secrets are needed for GHCR.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-push-ghcr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up image metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}
+          tags: |
+            type=ref,event=tag
+            type=sha
+          flavor: |
+            latest=false
+          force-lowercase: true
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # Docker Hub (optional): add two repository secrets to enable
+  #   DOCKERHUB_USERNAME - your Docker Hub account
+  #   DOCKERHUB_TOKEN    - a read/write access token
+  # then uncomment:
+  #
+  # build-push-dockerhub:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: docker/setup-buildx-action@v3
+  #     - name: Log in to Docker Hub
+  #       uses: docker/login-action@v3
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
+  #     - name: Set up image metadata
+  #       id: meta
+  #       uses: docker/metadata-action@v5
+  #       with:
+  #         images: registry.hub.docker.com/${{ secrets.DOCKERHUB_USERNAME }}/house-dashboard
+  #         tags: |
+  #           type=ref,event=tag
+  #           type=sha
+  #     - name: Build and push
+  #       uses: docker/build-push-action@v6
+  #       with:
+  #         context: .
+  #         push: true
+  #         tags: ${{ steps.meta.outputs.tags }}

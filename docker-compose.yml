@@ -1,0 +1,27 @@
+name: house-dashboard
+
+services:
+  dashboard:
+    build: .
+    image: house-dashboard:0.1.0
+    ports:
+      # ${DASH_BIND} comes from .env (see .env.example). Host port stays
+      # 8000 inside the container; only the host-side bind is configurable,
+      # so this file needs no per-machine edits.
+      - "${DASH_BIND:-127.0.0.1:8090}:8000"
+    env_file:
+      - .env
+    environment:
+      # Non-secret deployment default: the container binds 0.0.0.0, so the
+      # session cookie must be Secure (served behind TLS in production).
+      DASH_COOKIE_SECURE: "true"
+    volumes:
+      # Persists the SQLite database and the generated .secret key.
+      - dashboard_data:/data
+    restart: unless-stopped
+    # Behind a reverse proxy? Point the proxy upstream at 127.0.0.1:8090
+    # (the default DASH_BIND). For browser-only local dev, set
+    # DASH_BIND=127.0.0.1:8000 in .env instead.
+
+volumes:
+  dashboard_data:

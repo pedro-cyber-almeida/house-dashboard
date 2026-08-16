@@ -1,0 +1,21 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Local state: the SQLite database, generated session key, local env file
+data/
+.env
+
+# Tooling caches
+.ruff_cache/
+
+# OS cruft
+Thumbs.db
+.DS_Store

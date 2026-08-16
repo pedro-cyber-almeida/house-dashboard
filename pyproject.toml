@@ -1,0 +1,37 @@
+[project]
+name = "dashboard"
+version = "0.1.0"
+description = "Dashboard local para os servicos da casa (FastAPI + SQLModel)."
+requires-python = ">=3.13"
+dependencies = [
+    "bcrypt>=4.0.0,<4.1",
+    "fastapi>=0.141.1",
+    "fastapi-cli[standard]>=0.0.32",
+    "httpx>=0.28.1",
+    "itsdangerous>=2.2.0",
+    "passlib[bcrypt]>=1.7.4",
+    "python-multipart>=0.0.32",
+    "sqlmodel>=0.0.39",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.16.3",
+    "ty>=0.0.72",
+]
+
+[tool.fastapi]
+entrypoint = "dashboard.main:app"
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+extend-exclude = []
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "W", "C4", "SIM"]
+ignore = ["UP017"]
