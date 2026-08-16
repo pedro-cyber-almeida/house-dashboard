@@ -32,6 +32,50 @@ SQLite database, zero external services.
   live).
 - **Vanilla-JS front-end**, dark/light/system theme per account.
 
+## Screenshots
+
+All captures below are straight from a live demo instance (headless Chromium,
+1440 px wide) with no post-processing.
+
+![Login](docs/screenshots/login.png)
+
+*Login — signed (http-only) session cookie, two roles: `admin` and `user`.
+Accounts are created from the admin screen.*
+
+![Dashboard, light theme](docs/screenshots/dashboard-light.png)
+
+*Dashboard (light theme). One tile per service, grouped by category (A–Z).
+The LED is decided **on the server**: `online` = a health path answered,
+`degraded` = answers but no health path confirms, `offline` = connection
+refused, `unknown` = hostname does not resolve from the server. The header
+count (`2/5 online · 1 degraded`) is built from those probes. Logos render
+as stored `data:` images (Jellyfin fetched its own favicon; the others show
+the initials placeholder).*
+
+![Instant search](docs/screenshots/search.png)
+
+*Instant search by name/description (case- and diacritics-insensitive,
+`Esc` clears). While a term is active the ↑/↓ reorder buttons hide, because
+the order API expects exactly the full assigned set.*
+
+![Account settings](docs/screenshots/settings.png)
+
+*Account settings: display name, avatar (PNG/JPEG/WebP/SVG), theme
+(`system`/`light`/`dark`, persisted per account) and password change.*
+
+![Dashboard, dark theme](docs/screenshots/dashboard-dark.png)
+
+*The same board in dark theme — cycled with the `◐ Theme` button in the top
+bar; the choice is saved to the account, not the browser.*
+
+![Admin](docs/screenshots/admin.png)
+
+*Admin. Left: the global services catalogue — create/edit/remove, optional
+auto-suggested category, logo upload **or** one-click "Fetch icon" (pulls
+the service's own favicon, same magic-byte validation as uploads). Right:
+per-user permissions — `admin`/`user` role, active flag, and exactly which
+catalogue services that account sees.*
+
 ## Quick start (Docker)
 
 ```sh

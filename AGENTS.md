@@ -264,6 +264,22 @@ português europeu.
   healthy.
 - **Por validar (browser)**: instalação "Add to home screen"/ecrã inicial e
   o fallback offline visual — o resto está provado por smoke.
+- **Screenshots (2026-08-16, repo público)**: o `agent-browser` (npm) **sai
+  headless neste Windows** (o que falhava era a interação manual/inspecção —
+  screenshot+eval funcionam). Pipeline das imagens: container demo
+  descartável (`docker run` da mesma imagem em 127.0.0.1:3200, BD vazia,
+  `DASH_COOKIE_SECURE=false`) + um `python http.server` a devolver 503 em
+  9977 para forçar `degraded`; seed por API (5 serviços: online×2, offline,
+  unknown `*.home-lab.invalid`, degraded) + `fetch-icon` no Jellyfin (URL
+  própria → o seu `favicon.svg`). 6 capturas em `C:\tmp\opencode\shots`
+  copiadas para **`docs/screenshots/`** + secção "Screenshots" no README.
+  **Verificação sem visão**: este modelo não lê imagens — o conteúdo das
+  capturas foi provado por `agent-browser eval` no DOM (classes
+  `led-online/offline/degraded/unknown` nos tiles, títulos dos grupos,
+  resumo `2/5 online · 1 degraded`, 1 `IMG` de ícone + 4 fallbacks, 2
+  botões ↑/↓ só no grupo Media). Regra: screenshots de repo público
+  NUNCA da instância real (URLs de LAN) — sempre instância demo + dados
+  fictícios.
 
 ## Notas de ambiente
 
