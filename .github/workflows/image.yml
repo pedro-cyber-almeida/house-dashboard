@@ -39,7 +39,6 @@ jobs:
             type=sha
           flavor: |
             latest=false
-          force-lowercase: true
 
       - name: Build and push
         uses: docker/build-push-action@v6

@@ -284,13 +284,15 @@ português europeu.
   automática quando falta ~16k tokens de janela. Nota: `/compact` (e
   `/undo`, `/redo`) são comandos do TUI — o agente **não os invocam por
   ferramenta**; a config acima é o mecanismo automático.
-- **Publicação (estado 2026-08-16)**: repo git local com commit inicial
-  (identidade inline `pedro <pedro@localhost>` — não havia identidade git
-  global; o user pode `git commit --amend --reset-author` se quiser outra).
-  CI: `.github/workflows/image.yml` faz build + push de
-  `ghcr.io/<owner>///<repo>` em tag `v*` — requer pacote GitHub **criado**
-  (Settings → Packages) com *Public* + permission `packages: write` declarada
-  no workflow. **Conta/nome Docker Hub por definir pelo user**: job
-  comentado no workflow à espera dos secrets `DOCKERHUB_USERNAME` e
-  `DOCKERHUB_TOKEN`. Push remoto e tags ainda por fazer pelo user
-  (não há remote configurado nesta cópia).
+- **Publicação (estado 2026-08-16, ✅ publicada)**: repo **público**
+  `github.com/pedro-cyber-almeida/house-dashboard`, branch `master` (commit
+  inicial, identidade inline `pedro <pedro@localhost>` — não há identidade
+  git global; o user pode `git commit --amend --reset-author` se quiser
+  outra). Tag anotada **`v0.1.0`** pushada → o workflow `build-image`
+  rodou a verde e empurrou **`ghcr.io/pedro-cyber-almeida/house-dashboard:v0.1.0`**
+  e `:sha-b9fb15e`. Nota: o pacote GHCR foi criado automaticamente ao 1.º
+  push (não é preciso "criar pacote" prévio na Settings). **Docker Hub ainda
+  não**: job comentado no workflow, à espera da conta do user + secrets
+  `DOCKERHUB_USERNAME`/`DOCKERHUB_TOKEN`. Fluxo de nova release:
+  editar → commit → `git tag -a vX.Y.Z` → `git push origin vX.Y.Z` → o CI
+  publica sozinho.
